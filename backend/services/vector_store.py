@@ -50,7 +50,7 @@ class ChromaVectorStore:
                 settings = get_settings()
                 host = settings.pinecone_host or (self._index_name if self._index_name.startswith("http") else None)
                 if host:
-                    self._pinecone_index = pc.Index(name="smartcache", host=host)
+                    self._pinecone_index = pc.Index(name=self._index_name, host=host)
                 else:
                     self._pinecone_index = pc.Index(self._index_name)
 

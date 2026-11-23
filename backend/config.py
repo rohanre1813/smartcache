@@ -23,7 +23,7 @@ class Settings(BaseSettings):
 
     # --- Pinecone ---
     pinecone_api_key: str = ""
-    pinecone_index_name: str = "smartcache"
+    pinecone_index_name: str = "smartcache-vector"
     pinecone_host: str = ""
 
     # --- Upstash Redis ---
