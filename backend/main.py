@@ -27,7 +27,7 @@ from services.llm_client import LLMClient
 from services.mongodb import MongoDBService
 from services.pii_detector import PIIDetector
 from services.router import ComplexityRouter
-from services.vector_store import ChromaVectorStore
+from services.vector_store import PineconeVectorStore
 
 logging.basicConfig(
     level=logging.INFO,
@@ -49,7 +49,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
 
     # Instantiate services
     embedder = GeminiEmbedder()
-    vector_store = ChromaVectorStore()
+    vector_store = PineconeVectorStore()
     cache = RedisCache()
     mongodb = MongoDBService()
     pii_detector = PIIDetector()

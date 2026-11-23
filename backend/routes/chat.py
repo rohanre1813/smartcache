@@ -29,7 +29,7 @@ from services.llm_client import LLMClient
 from services.mongodb import MongoDBService
 from services.pii_detector import PIIDetector
 from services.router import ComplexityRouter, ModelTier
-from services.vector_store import ChromaVectorStore
+from services.vector_store import PineconeVectorStore
 
 logger = logging.getLogger(__name__)
 
@@ -130,7 +130,7 @@ def _get_mongodb(request: Request) -> MongoDBService:
 def _get_embedder(request: Request) -> GeminiEmbedder:
     return request.app.state.embedder
 
-def _get_vector_store(request: Request) -> ChromaVectorStore:
+def _get_vector_store(request: Request) -> PineconeVectorStore:
     return request.app.state.vector_store
 
 def _get_cache(request: Request) -> RedisCache:
@@ -214,7 +214,7 @@ async def send_chat_message(
     user: Optional[Dict[str, Any]] = Depends(get_current_user_optional),
     mongodb: MongoDBService = Depends(_get_mongodb),
     embedder: GeminiEmbedder = Depends(_get_embedder),
-    vector_store: ChromaVectorStore = Depends(_get_vector_store),
+    vector_store: PineconeVectorStore = Depends(_get_vector_store),
     cache: RedisCache = Depends(_get_cache),
     pii_detector: PIIDetector = Depends(_get_pii),
     complexity_router: ComplexityRouter = Depends(_get_complexity_router),
@@ -315,7 +315,7 @@ async def send_chat_message(
             resolved_intent=resolved_query if resolved_query != raw_prompt else None,
         )
 
-    # 8. Check Semantic Vector Cache (Pinecone / ChromaDB with tenant isolation)
+    # 8. Check Semantic Vector Cache (Pinecone with tenant isolation)
     sem_result = None
     embedding = None
     if not pii_result.has_pii and not is_private and not is_temporal:

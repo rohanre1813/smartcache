@@ -40,10 +40,6 @@ class Settings(BaseSettings):
     jwt_algorithm: str = "HS256"
     jwt_expiry_hours: int = 168  # 7 days
 
-    # --- ChromaDB fallback ---
-    chroma_persist_dir: str = "./chroma_db"
-    chroma_collection_name: str = "query_cache"
-
     # --- Semantic cache ---
     similarity_threshold: float = 0.78
     cache_ttl_seconds: int = 86400  # 24 h

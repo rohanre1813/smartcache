@@ -21,7 +21,7 @@ from services.embedder import GeminiEmbedder
 from services.llm_client import LLMClient
 from services.pii_detector import PIIDetector
 from services.router import ComplexityRouter, ModelTier
-from services.vector_store import ChromaVectorStore
+from services.vector_store import PineconeVectorStore
 
 logger = logging.getLogger(__name__)
 
@@ -211,7 +211,7 @@ def is_temporal_query(query: str) -> bool:
 def _get_embedder(request: Request) -> GeminiEmbedder:
     return request.app.state.embedder
 
-def _get_vector_store(request: Request) -> ChromaVectorStore:
+def _get_vector_store(request: Request) -> PineconeVectorStore:
     return request.app.state.vector_store
 
 def _get_cache(request: Request) -> RedisCache:
@@ -242,7 +242,7 @@ def _cache_key(text: str, tenant_id: str = "default", model_tag: str = "gemini-f
 async def handle_query(
     body: QueryRequest,
     embedder: GeminiEmbedder = Depends(_get_embedder),
-    vector_store: ChromaVectorStore = Depends(_get_vector_store),
+    vector_store: PineconeVectorStore = Depends(_get_vector_store),
     cache: RedisCache = Depends(_get_cache),
     pii_detector: PIIDetector = Depends(_get_pii),
     complexity_router: ComplexityRouter = Depends(_get_complexity_router),
@@ -326,7 +326,7 @@ async def handle_query(
             tenant_id=tenant_id,
         )
 
-    # 4. Semantic similarity search (Pinecone / ChromaDB with tenant isolation)
+    # 4. Semantic similarity search (Pinecone with tenant isolation)
     # Bypass vector search if query is temporal, private, or contains PII
     sem_result = None
     embedding = None
