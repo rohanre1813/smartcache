@@ -38,7 +38,7 @@ class MongoDBService:
 
                 self._client = AsyncIOMotorClient(
                     self._uri,
-                    serverSelectionTimeoutMS=5000,
+                    serverSelectionTimeoutMS=15000,
                 )
                 self._db = self._client[self._db_name]
 
